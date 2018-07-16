@@ -1616,5 +1616,5 @@ MonoBehaviour:
   btn_Server: {fileID: 1170247717}
   btn_Client: {fileID: 594101968}
   btn_StartStopServer: {fileID: 1306848423}
-  txt_Ipaddress: {fileID: 1795296843}
+  txt_IpaddressText: {fileID: 1795296843}
   btn_ConnectDisconnect: {fileID: 1123016153}

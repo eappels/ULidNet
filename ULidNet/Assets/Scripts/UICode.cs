@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class UICode : MonoBehaviour
 {
 
-    public GameObject pnl_Menu, pnl_Server, pnl_Client, btn_Server, btn_Client, btn_StartStopServer, txt_Ipaddress, btn_ConnectDisconnect;
+    public GameObject pnl_Menu, pnl_Server, pnl_Client, btn_Server, btn_Client, btn_StartStopServer, txt_IpaddressText, btn_ConnectDisconnect;
     private LidServerBehaviour lsbhaviour;
     private LidClientBehaviour lcbhaviour;
 
@@ -17,6 +17,10 @@ public class UICode : MonoBehaviour
 
     private void Start()
     {
+        if (Debug.isDebugBuild)
+        {
+            txt_IpaddressText.GetComponent<InputField>().text = "127.0.0.1:25000";
+        }
         btn_Server.GetComponent<Button>().onClick.AddListener(btn_Server_Click);
         btn_Client.GetComponent<Button>().onClick.AddListener(btn_Client_Click);
         btn_StartStopServer.GetComponent<Button>().onClick.AddListener(btn_StartStopServer_Click);
@@ -63,7 +67,7 @@ public class UICode : MonoBehaviour
     {
         if (!lcbhaviour.Isconnected)
         {
-            lcbhaviour.Connect(txt_Ipaddress.GetComponentInChildren<Text>().text);
+            lcbhaviour.Connect(txt_IpaddressText.GetComponent<Text>().text);
         }
         else
         {
@@ -73,13 +77,13 @@ public class UICode : MonoBehaviour
 
     private void OnConnected()
     {
-        txt_Ipaddress.SetActive(false);
+        txt_IpaddressText.SetActive(false);
         btn_ConnectDisconnect.GetComponentInChildren<Text>().text = "Disconnect";
     }
 
     private void OnDisconnected()
     {
-        txt_Ipaddress.SetActive(true);
+        txt_IpaddressText.SetActive(true);
         btn_ConnectDisconnect.GetComponentInChildren<Text>().text = "Connect";
     }
 }

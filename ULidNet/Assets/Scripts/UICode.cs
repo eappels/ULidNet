@@ -67,7 +67,7 @@ public class UICode : MonoBehaviour
     {
         if (!lcbhaviour.Isconnected)
         {
-            lcbhaviour.Connect(txt_IpaddressText.GetComponent<Text>().text);
+            lcbhaviour.Connect(txt_IpaddressText.GetComponent<InputField>().text);
         }
         else
         {

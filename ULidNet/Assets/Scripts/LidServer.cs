@@ -1,11 +1,14 @@
 ﻿using Lidgren.Network;
+using System;
 
 public class LidServer : LidPeer
 {
 
+    public event Action<string> DebugMessage = null, UnknownMessage = null;
     public readonly NetServer netserver;
 
     public LidServer()
+        :base ()
     {
         instance = this;
         isserver = true;
@@ -25,15 +28,13 @@ public class LidServer : LidPeer
         netserver.Shutdown("Server shutdown");
     }
 
-    protected override void OnStatusChanged(NetIncomingMessage nim)
+    protected override void OnDebugMessage(NetIncomingMessage nim)
     {
-        switch (nim.SenderConnection.Status)
-        {
-            case NetConnectionStatus.Connected:
-                break;
+        if (DebugMessage != null) DebugMessage(nim.ReadString());
+    }
 
-            case NetConnectionStatus.Disconnected:
-                break;
-        }
+    protected override void OnUnknownMessage(NetIncomingMessage nim)
+    {
+        if (UnknownMessage != null) UnknownMessage(nim.ReadString());
     }
 }

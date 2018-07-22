@@ -11,7 +11,7 @@ public abstract class LidPeer
     public const int PORT = 25000;
 
     public LidPeer()
-        : base()
+        : base ()
     {
     }
 
@@ -22,14 +22,9 @@ public abstract class LidPeer
         {
             switch (nim.MessageType)
             {
-                case NetIncomingMessageType.Data:
-                    OnDataMessage(nim);
-                    break;
-
                 case NetIncomingMessageType.StatusChanged:
                     OnStatusChanged(nim);
                     break;
-
                 case NetIncomingMessageType.VerboseDebugMessage:
                 case NetIncomingMessageType.DebugMessage:
                 case NetIncomingMessageType.WarningMessage:
@@ -37,24 +32,6 @@ public abstract class LidPeer
                 case NetIncomingMessageType.Error:
                     OnDebugMessage(nim);
                     break;
-
-                #region Ununsed types
-                //case NetIncomingMessageType.UnconnectedData:
-                //    break;
-                //case NetIncomingMessageType.ConnectionApproval:
-                //    break;
-                //case NetIncomingMessageType.Receipt:
-                //    break;
-                //case NetIncomingMessageType.DiscoveryRequest:
-                //    break;
-                //case NetIncomingMessageType.DiscoveryResponse:
-                //    break;
-                //case NetIncomingMessageType.NatIntroductionSuccess:
-                //    break;
-                //case NetIncomingMessageType.ConnectionLatencyUpdated:
-                //    break;
-                #endregion
-
                 default:
                     OnUnknownMessage(nim);
                     break;
@@ -73,23 +50,17 @@ public abstract class LidPeer
         return netpeer.CreateMessage();
     }
 
-    protected virtual void OnDataMessage(NetIncomingMessage nim)
-    {
-        Debug.Log("Data message: " + nim.LengthBytes + " bytes");
-    }
-
     protected virtual void OnDebugMessage(NetIncomingMessage nim)
     {
         Debug.Log("Debug message: " + nim.ReadString());
     }
 
-    protected virtual void OnStatusChanged(NetIncomingMessage nim)
-    {
-        Debug.Log("Status changed: " + nim.SenderConnection.Status);
-    }
-
     protected virtual void OnUnknownMessage(NetIncomingMessage nim)
     {
         Debug.Log("Unhandled message type: " + nim.MessageType);
+    }
+
+    protected virtual void OnStatusChanged(NetIncomingMessage nim)
+    {
     }
 }

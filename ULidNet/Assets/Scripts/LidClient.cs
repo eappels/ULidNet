@@ -4,23 +4,32 @@ using System;
 public class LidClient : LidPeer
 {
 
-    public event Action OnConnected = null, OnDisconnected = null;
+    public event Action<string> DebugMessage = null, UnknownMessage = null;
+    public event Action Connected = null, Disconnected = null;
     public readonly NetClient netclient;
 
     public LidClient()
+        : base()
     {
         instance = this;
         isserver = false;
         isclient = true;
         var config = CreateConfig();
         netpeer = netclient = new NetClient(config);
-        netclient.Start();
+        netclient.Start(); 
     }
 
     public void Connect(string connectionstring)
     {
-        string[] tmparray = connectionstring.Split(':');
-        netclient.Connect((string)tmparray[0], int.Parse(tmparray[1]));
+        if (connectionstring.Contains(":"))
+        {
+            string[] tmpstringarray = connectionstring.Split(':');
+            netclient.Connect(tmpstringarray[0], int.Parse(tmpstringarray[1]));
+        }
+        else
+        {
+            netclient.Connect(connectionstring, LidPeer.PORT);
+        }
     }
 
     public void Disconnect()
@@ -33,16 +42,25 @@ public class LidClient : LidPeer
         netclient.Shutdown("Client shutdown");
     }
 
+    protected override void OnDebugMessage(NetIncomingMessage nim)
+    {
+        if (DebugMessage != null) DebugMessage(nim.ReadString());
+    }
+
+    protected override void OnUnknownMessage(NetIncomingMessage nim)
+    {
+        if (UnknownMessage != null) UnknownMessage(nim.ReadString());
+    }
+
     protected override void OnStatusChanged(NetIncomingMessage nim)
     {
         switch (nim.SenderConnection.Status)
         {
             case NetConnectionStatus.Connected:
-                if (OnConnected != null) OnConnected();
+                if (Connected != null) Connected();
                 break;
-
             case NetConnectionStatus.Disconnected:
-                if (OnDisconnected != null) OnDisconnected();
+                if (Disconnected != null) Disconnected();
                 break;
         }
     }
